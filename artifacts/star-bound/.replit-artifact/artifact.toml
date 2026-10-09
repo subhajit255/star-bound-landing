@@ -1,0 +1,32 @@
+kind = "web"
+previewPath = "/"
+title = "Star Bound"
+description = "Next.js investor-facing website with protected content and image administration."
+version = "1.0.0"
+id = "artifacts/star-bound"
+router = "path"
+
+[[services]]
+name = "web"
+paths = ["/", "/_next/hmr"]
+localPort = 26043
+
+[services.development]
+run = "pnpm --filter @workspace/star-bound run dev"
+
+[services.production.build]
+args = ["pnpm", "--filter", "@workspace/star-bound", "run", "build"]
+
+[services.production.run]
+args = ["pnpm", "--filter", "@workspace/star-bound", "run", "start"]
+
+[services.production.run.env]
+PORT = "26043"
+NODE_ENV = "production"
+
+[services.production.health.startup]
+path = "/"
+
+[services.env]
+PORT = "26043"
+BASE_PATH = "/"

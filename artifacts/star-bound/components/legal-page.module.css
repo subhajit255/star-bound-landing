@@ -1,0 +1,14 @@
+.page { min-height: 100vh; background: var(--night); color: #fff; --muted: #b7b8cb; }
+.main { max-width: 900px; padding-top: 126px; padding-bottom: 80px; }
+.back { display: inline-block; margin-bottom: 36px; color: var(--muted); }
+.back:hover, .related a:hover { color: white; }
+.label { margin-bottom: 14px; color: var(--gold); font-size: 13px; text-transform: uppercase; letter-spacing: .12em; }
+.main h1 { font-family: var(--display); font-size: clamp(36px, 6vw, 60px); line-height: 1.1; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.introduction { margin-top: 24px; color: var(--muted); font-size: 19px; line-height: 1.65; }
+.draft { margin-top: 32px; padding: 20px 24px; border: 1px solid rgba(243, 201, 105, .3); border-radius: 12px; background: rgba(243, 201, 105, .06); color: var(--muted); line-height: 1.7; }
+.draft strong { color: var(--gold); }
+.article section { margin-top: 38px; }
+.article h2 { font-size: 23px; line-height: 1.4; }
+.article p { margin-top: 12px; color: var(--muted); font-size: 17px; line-height: 1.8; overflow-wrap: anywhere; }
+.related { margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255, 255, 255, .12); color: var(--gold); }
+@media (max-width: 600px) { .main { padding-top: 104px; padding-bottom: 56px; } .draft { padding: 18px; } }

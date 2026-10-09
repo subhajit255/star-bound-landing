@@ -1,0 +1,639 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: site
+    description: Public website content and CMS access.
+  - name: auth
+    description: Browser authentication.
+  - name: storage
+    description: Image upload and public object serving.
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /site-content:
+    get:
+      operationId: getSiteContent
+      tags: [site]
+      summary: Get published Star Bound website content
+      responses:
+        "200":
+          description: Current public website content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+    put:
+      operationId: updateSiteContent
+      tags: [site]
+      summary: Replace published website content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteContentInput"
+      responses:
+        "200":
+          description: Updated website content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+        "401":
+          description: Authentication required.
+        "403":
+          description: Admin access required.
+  /website-pages:
+    get:
+      operationId: getWebsitePages
+      tags: [site]
+      summary: Get the published standard website pages
+      responses:
+        "200":
+          description: Page content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebsitePages"
+    put:
+      operationId: updateWebsitePages
+      tags: [site]
+      summary: Publish updated standard website pages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebsitePagesInput"
+      responses:
+        "200":
+          description: Updated pages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebsitePages"
+        "400":
+          description: Invalid content.
+        "401":
+          description: Authentication required.
+        "403":
+          description: Admin access required.
+  /enquiries:
+    post:
+      operationId: submitEnquiry
+      tags: [site]
+      summary: Submit a contact or pricing enquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnquiryInput"
+      responses:
+        "201":
+          description: Enquiry securely received.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnquiryReceipt"
+        "400":
+          description: Invalid enquiry.
+        "429":
+          description: Too many enquiries.
+  /admin/enquiries:
+    get:
+      operationId: listEnquiries
+      tags: [site]
+      summary: List contact enquiries for administrators
+      responses:
+        "200":
+          description: Enquiries, newest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Enquiry"
+        "401":
+          description: Authentication required.
+        "403":
+          description: Admin access required.
+  /admin/enquiries/{id}:
+    delete:
+      operationId: deleteEnquiry
+      tags: [site]
+      summary: Delete an enquiry and its contact details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "204":
+          description: Enquiry deleted.
+        "404":
+          description: Enquiry not found.
+        "401":
+          description: Authentication required.
+        "403":
+          description: Admin access required.
+  /admin/access:
+    get:
+      operationId: getAdminAccess
+      tags: [site]
+      summary: Check whether the current user can edit the website
+      responses:
+        "200":
+          description: Admin access status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccess"
+  /auth/user:
+    get:
+      operationId: getCurrentAuthUser
+      tags: [auth]
+      summary: Get the current signed-in user
+      responses:
+        "200":
+          description: Authentication status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUserEnvelope"
+  /login:
+    get:
+      operationId: beginBrowserLogin
+      tags: [auth]
+      summary: Start browser sign-in
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to the identity provider.
+  /callback:
+    get:
+      operationId: handleBrowserLoginCallback
+      tags: [auth]
+      summary: Complete browser sign-in
+      responses:
+        "302":
+          description: Redirect back to the site.
+  /logout:
+    get:
+      operationId: logoutBrowserSession
+      tags: [auth]
+      summary: End the browser session
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect back to the site.
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a presigned image upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Invalid file metadata.
+        "401":
+          description: Authentication required.
+        "403":
+          description: Admin access required.
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Serve an uploaded public image
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Image content.
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Image not found.
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    SiteMetric:
+      type: object
+      required: [value, label]
+      properties:
+        value:
+          type: string
+          maxLength: 40
+        label:
+          type: string
+          maxLength: 80
+    SiteFeature:
+      type: object
+      required: [title, description, imagePath]
+      properties:
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 320
+        imagePath:
+          type: [string, "null"]
+          maxLength: 500
+    SiteStep:
+      type: object
+      required: [title, description]
+      properties:
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 320
+    SiteContent:
+      type: object
+      required:
+        - brandName
+        - heroEyebrow
+        - heroTitle
+        - heroDescription
+        - primaryCta
+        - secondaryCta
+        - heroImagePath
+        - proofHeadline
+        - proofDescription
+        - metrics
+        - features
+        - workflowTitle
+        - steps
+        - closingTitle
+        - closingDescription
+        - closingCta
+        - updatedAt
+      properties:
+        brandName:
+          type: string
+          maxLength: 60
+        heroEyebrow:
+          type: string
+          maxLength: 100
+        heroTitle:
+          type: string
+          maxLength: 160
+        heroDescription:
+          type: string
+          maxLength: 500
+        primaryCta:
+          type: string
+          maxLength: 60
+        secondaryCta:
+          type: string
+          maxLength: 60
+        heroImagePath:
+          type: [string, "null"]
+          maxLength: 500
+        proofHeadline:
+          type: string
+          maxLength: 160
+        proofDescription:
+          type: string
+          maxLength: 500
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteMetric"
+          maxItems: 4
+        features:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteFeature"
+          maxItems: 4
+        workflowTitle:
+          type: string
+          maxLength: 160
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteStep"
+          maxItems: 4
+        closingTitle:
+          type: string
+          maxLength: 160
+        closingDescription:
+          type: string
+          maxLength: 500
+        closingCta:
+          type: string
+          maxLength: 60
+        updatedAt:
+          type: string
+          format: date-time
+    SiteContentInput:
+      type: object
+      required:
+        - brandName
+        - heroEyebrow
+        - heroTitle
+        - heroDescription
+        - primaryCta
+        - secondaryCta
+        - heroImagePath
+        - proofHeadline
+        - proofDescription
+        - metrics
+        - features
+        - workflowTitle
+        - steps
+        - closingTitle
+        - closingDescription
+        - closingCta
+      properties:
+        brandName:
+          type: string
+          minLength: 1
+          maxLength: 60
+        heroEyebrow:
+          type: string
+          maxLength: 100
+        heroTitle:
+          type: string
+          minLength: 1
+          maxLength: 160
+        heroDescription:
+          type: string
+          maxLength: 500
+        primaryCta:
+          type: string
+          maxLength: 60
+        secondaryCta:
+          type: string
+          maxLength: 60
+        heroImagePath:
+          type: [string, "null"]
+          maxLength: 500
+        proofHeadline:
+          type: string
+          maxLength: 160
+        proofDescription:
+          type: string
+          maxLength: 500
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteMetric"
+          maxItems: 4
+        features:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteFeature"
+          maxItems: 4
+        workflowTitle:
+          type: string
+          maxLength: 160
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/SiteStep"
+          maxItems: 4
+        closingTitle:
+          type: string
+          maxLength: 160
+        closingDescription:
+          type: string
+          maxLength: 500
+        closingCta:
+          type: string
+          maxLength: 60
+    AdminAccess:
+      type: object
+      required: [allowed]
+      properties:
+        allowed:
+          type: boolean
+        message:
+          type: string
+    AuthUser:
+      type: object
+      required: [id, email, firstName, lastName, profileImageUrl]
+      properties:
+        id:
+          type: string
+        email:
+          type: [string, "null"]
+          format: email
+        firstName:
+          type: [string, "null"]
+        lastName:
+          type: [string, "null"]
+        profileImageUrl:
+          type: [string, "null"]
+    AuthUserEnvelope:
+      type: object
+      required: [user]
+      properties:
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/AuthUser"
+            - type: "null"
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        size:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        contentType:
+          type: string
+          enum: [image/png, image/jpeg, image/webp, image/avif]
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
+    WebsitePageSection:
+      type: object
+      required: [title, body]
+      properties:
+        title:
+          type: string
+          maxLength: 160
+        body:
+          type: string
+          maxLength: 8000
+    WebsitePage:
+      type: object
+      required: [slug, eyebrow, title, description, seoTitle, seoDescription, imagePath, sections]
+      properties:
+        slug:
+          type: string
+          enum: [features, about, pricing, faq, contact, privacy, terms]
+        eyebrow:
+          type: string
+          maxLength: 100
+        title:
+          type: string
+          minLength: 1
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 600
+        seoTitle:
+          type: string
+          minLength: 1
+          maxLength: 120
+        seoDescription:
+          type: string
+          maxLength: 200
+        imagePath:
+          type: [string, "null"]
+          maxLength: 500
+        sections:
+          type: array
+          maxItems: 12
+          items:
+            $ref: "#/components/schemas/WebsitePageSection"
+    WebsitePagesInput:
+      type: object
+      required: [pages]
+      properties:
+        pages:
+          type: array
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: "#/components/schemas/WebsitePage"
+    WebsitePages:
+      type: object
+      required: [pages, updatedAt]
+      properties:
+        pages:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebsitePage"
+        updatedAt:
+          type: string
+          format: date-time
+    EnquiryInput:
+      type: object
+      required: [name, email, company, message, interest, privacyConsent]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        company:
+          type: string
+          maxLength: 180
+        message:
+          type: string
+          minLength: 10
+          maxLength: 4000
+        interest:
+          type: string
+          enum: [demo, pricing, general]
+        privacyConsent:
+          type: boolean
+        website:
+          type: string
+          maxLength: 200
+    EnquiryReceipt:
+      type: object
+      required: [id, message]
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+    Enquiry:
+      type: object
+      required: [id, name, email, company, message, interest, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        company:
+          type: string
+        message:
+          type: string
+        interest:
+          type: string
+          enum: [demo, pricing, general]
+        createdAt:
+          type: string
+          format: date-time
+

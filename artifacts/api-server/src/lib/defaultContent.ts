@@ -1,0 +1,28 @@
+export const defaultContent = {
+  brandName: "Star Bound",
+  heroEyebrow: "AI operations workspace",
+  heroTitle: "Run your AI teams from one clear view.",
+  heroDescription: "Star Bound brings model teams, quality scans, and team visibility into one understandable workspace, so operators always know what is running and what needs attention.",
+  primaryCta: "Explore the product",
+  secondaryCta: "See the workflow",
+  heroImagePath: null,
+  proofHeadline: "Built for the people who keep AI work on track.",
+  proofDescription: "One place to compose model teams, check their quality, and share a plain-language read on the whole operation.",
+  metrics: [],
+  features: [
+    { title: "Constellations", description: "Compose focused model teams and keep their quality visible at a glance.", imagePath: null },
+    { title: "Workspace overview", description: "A clear read on AI operations, usage, and team activity.", imagePath: null },
+    { title: "Reports and analytics", description: "Turn product activity into a sharper view of what is changing.", imagePath: null },
+    { title: "Content library", description: "Keep guidance, templates, and release notes useful and current.", imagePath: null },
+  ],
+  workflowTitle: "From first model to shared confidence.",
+  steps: [
+    { title: "Compose", description: "Group models into a constellation built for one job." },
+    { title: "Scan", description: "Run quality scans and surface findings early." },
+    { title: "Review", description: "See health, usage, and risk in one place." },
+    { title: "Share", description: "Give the whole team the same clear picture." },
+  ],
+  closingTitle: "See Star Bound in motion.",
+  closingDescription: "Take the product tour and see how the workspace fits together.",
+  closingCta: "Back to the top",
+};
