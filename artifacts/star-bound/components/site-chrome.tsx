@@ -134,9 +134,7 @@ export function SiteFooter({ brand, preview = false }: { brand: string; preview?
         </div>
         <div className="foot-row">
           <span>Prices and amounts on this website are shown in GBP (&pound;).</span>
-          {!preview && (
-            <a href="/admin" data-testid="link-admin">Site admin</a>
-          )}
+          <img src="/logo.jpeg" alt="Logo" width={40} height={40} style={{ borderRadius: '6px', objectFit: 'cover' }} />
         </div>
       </div>
     </footer>
