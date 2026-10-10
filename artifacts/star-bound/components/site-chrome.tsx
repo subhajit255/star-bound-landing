@@ -49,7 +49,7 @@ export function SiteNav({
   const ctaIsAnchor = ctaHref.startsWith('#');
   const Brand = (
     <>
-      <StarMark />
+      <img src="/logo.jpeg" alt="Logo" width={28} height={28} style={{ borderRadius: '4px', objectFit: 'cover', marginRight: '8px' }} />
       <span>{brand}</span>
     </>
   );
@@ -114,7 +114,10 @@ export function SiteFooter({ brand, preview = false }: { brand: string; preview?
       <div className="wrap">
         <div className="foot-cols">
           <div className="foot-about">
-            <span className="brand"><StarMark size={22} /><span>{brand}</span></span>
+            <span className="brand">
+              <img src="/logo.jpeg" alt="Logo" width={22} height={22} style={{ borderRadius: '4px', objectFit: 'cover', marginRight: '8px' }} />
+              <span>{brand}</span>
+            </span>
             <p>A clear view of your model teams, quality scans and reports. Designed with UK organisations in mind.</p>
           </div>
           <nav aria-label="Explore">
