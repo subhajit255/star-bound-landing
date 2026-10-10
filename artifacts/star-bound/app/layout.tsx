@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   metadataBase: siteUrl() ? new URL(siteUrl()!) : undefined,
   title: 'Star Bound',
   description: 'Star Bound brings model teams, quality scans, and team visibility into one understandable workspace.',
+  icons: {
+    icon: '/logo.jpeg',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
