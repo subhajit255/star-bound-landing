@@ -123,8 +123,6 @@ export function Frame({ src, alt, label }: { src: string; alt: string; label?: s
 export function SiteView({ content, preview = false }: Props) {
   const c = content;
   const [tab, setTab] = useState(0);
-  const [step, setStep] = useState(0);
-  const [paused, setPaused] = useState(preview);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -134,12 +132,6 @@ export function SiteView({ content, preview = false }: Props) {
     window.addEventListener('scroll', on, { passive: true });
     return () => window.removeEventListener('scroll', on);
   }, [preview]);
-
-  useEffect(() => {
-    if (paused || c.steps.length < 2) return;
-    const t = setInterval(() => setStep((s) => (s + 1) % c.steps.length), 4200);
-    return () => clearInterval(t);
-  }, [paused, c.steps.length]);
 
   const go = (_id: string) => (e: MouseEvent) => {
     if (preview) e.preventDefault();
@@ -166,7 +158,7 @@ export function SiteView({ content, preview = false }: Props) {
         extra={[
           ...(c.features.length > 0 ? [{ href: '#tour', label: 'Product tour' }] : []),
           { href: '#traction', label: 'Traction' },
-          ...(c.steps.length > 0 ? [{ href: '#workflow', label: 'Workflow' }] : []),
+          { href: '#roadmap', label: 'Roadmap' },
         ]}
       />
 
@@ -199,7 +191,7 @@ export function SiteView({ content, preview = false }: Props) {
                   </a>
                 )}
                 {c.secondaryCta && (
-                  <a href="#workflow" className="btn btn-ghost" onClick={go('workflow')} data-testid="link-hero-secondary">
+                  <a href="#traction" className="btn btn-ghost" onClick={go('traction')} data-testid="link-hero-secondary">
                     {c.secondaryCta}
                   </a>
                 )}
@@ -279,37 +271,6 @@ export function SiteView({ content, preview = false }: Props) {
       )}
 
       <InvestorAnalytics preview={preview} />
-
-      {c.steps.length > 0 && (
-        <section className="flow" id="workflow">
-          <Stars />
-          <div className="wrap">
-            <Reveal force={preview}>
-              <h2 className="flow-title" data-testid="text-workflow-title">
-                {c.workflowTitle}
-              </h2>
-            </Reveal>
-            <div
-              className="steps"
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(preview)}
-            >
-              {c.steps.map((s, i) => (
-                <button
-                  key={i}
-                  className={`step ${i === step ? 'on' : ''} ${i < step ? 'done' : ''}`}
-                  onClick={() => setStep(i)}
-                  data-testid={`step-${i}`}
-                >
-                  <span className="step-dot">{i + 1}</span>
-                  <span className="step-title">{s.title}</span>
-                  <span className="step-desc">{s.description}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <Roadmap />
 
