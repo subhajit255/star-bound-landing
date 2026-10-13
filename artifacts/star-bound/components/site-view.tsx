@@ -7,6 +7,7 @@ import { StarMark } from './brand-mark';
 import { SiteNav, SiteFooter } from './site-chrome';
 import { Roadmap } from './roadmap';
 import { HeroVideo } from './hero-video';
+import { InvestorAnalytics } from './investor-analytics';
 
 type Props = { content: SiteContentInput; preview?: boolean };
 
@@ -164,6 +165,7 @@ export function SiteView({ content, preview = false }: Props) {
         preview={preview}
         extra={[
           ...(c.features.length > 0 ? [{ href: '#tour', label: 'Product tour' }] : []),
+          { href: '#traction', label: 'Traction' },
           ...(c.steps.length > 0 ? [{ href: '#workflow', label: 'Workflow' }] : []),
         ]}
       />
@@ -275,6 +277,8 @@ export function SiteView({ content, preview = false }: Props) {
           </div>
         </section>
       )}
+
+      <InvestorAnalytics preview={preview} />
 
       {c.steps.length > 0 && (
         <section className="flow" id="workflow">
