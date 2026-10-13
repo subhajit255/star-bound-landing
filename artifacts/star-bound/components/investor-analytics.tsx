@@ -11,7 +11,6 @@ type MetricItem = {
   description: string;
   trend: string;
   trendType: 'positive' | 'speed' | 'star' | 'shield';
-  chartType: 'growth' | 'frequency' | 'constellation' | 'accuracy';
 };
 
 const METRICS: MetricItem[] = [
@@ -20,49 +19,45 @@ const METRICS: MetricItem[] = [
     target: 148000,
     decimals: 0,
     suffix: '+',
-    label: 'Total App Downloads',
-    description: 'Rapid organic adoption across our iOS TestFlight and Android beta communities.',
+    label: 'App Downloads',
+    description: 'Rapid organic adoption driven by viral TikTok and Instagram creator momentum.',
     trend: '+64% MoM',
     trendType: 'positive',
-    chartType: 'growth',
   },
   {
     id: 'scans',
     target: 2840000,
     decimals: 0,
     suffix: '+',
-    label: 'Precision Scans Completed',
-    description: 'Real-time on-device vision AI scans processed with sub-1.4s response times.',
+    label: 'Completed Scans',
+    description: 'Instant on-device vision AI scans transforming freckles into celestial coordinates.',
     trend: '1.2s Latency',
     trendType: 'speed',
-    chartType: 'frequency',
   },
   {
-    id: 'constellations',
-    target: 325000,
+    id: 'registrations',
+    target: 96500,
     decimals: 0,
     suffix: '+',
-    label: 'Constellations Generated',
-    description: 'Unique freckle and mole topologies translated into custom celestial constellations.',
-    trend: '88% Shared',
+    label: 'User Registrations',
+    description: 'Registered explorer accounts saving multi-body vaults and unlocking personal star lore.',
+    trend: '65% Conversion',
     trendType: 'star',
-    chartType: 'constellation',
   },
   {
-    id: 'confidence',
-    target: 99.4,
-    decimals: 1,
-    suffix: '%',
-    label: 'AI Model Confidence',
-    description: 'Rigorous multi-point quality validation across diverse skin tones and lighting conditions.',
-    trend: 'Clinical Grade',
+    id: 'purchases',
+    target: 3850,
+    decimals: 0,
+    suffix: '+',
+    label: 'Purchases & Orders',
+    description: 'Monetized pre-orders across Star Bound Plus tiers and laser-etched constellation jewelry.',
+    trend: '£14.20 ARPU',
     trendType: 'shield',
-    chartType: 'accuracy',
   },
 ];
 
 const INVESTOR_HIGHLIGHTS = [
-  { label: 'Weekly Active Engagement', target: 34.2, decimals: 1, suffix: ' mins', hint: 'Avg. session depth' },
+  { label: 'Constellations Generated', target: 325000, decimals: 0, suffix: '+', hint: '88% social sharing rate' },
   { label: 'Cohort Retention (Day 7)', target: 72, decimals: 0, suffix: '%', hint: 'Top-decile consumer benchmark' },
   { label: 'On-Device Privacy', target: 100, decimals: 0, suffix: '%', hint: 'Zero raw images sent to cloud' },
   { label: 'Investment Status', text: 'Seed Stage', hint: 'Actively speaking with seed partners' },
@@ -196,8 +191,8 @@ export function InvestorAnalytics({ preview = false }: { preview?: boolean }) {
           </h2>
 
           <p className="analytics-desc" data-testid="text-analytics-description">
-            Early beta engagement demonstrating high viral adoption, daily repeat scan velocity, and proprietary
-            freckle-to-constellation vision AI accuracy.
+            Early cohort engagement proving product-market fit across downloads, daily completed scans, active user
+            registrations, and initial monetization pre-orders.
           </p>
         </div>
 
@@ -237,15 +232,18 @@ export function InvestorAnalytics({ preview = false }: { preview?: boolean }) {
                         <line x1="12" y1="15" x2="12" y2="18" />
                       </svg>
                     )}
-                    {metric.id === 'constellations' && (
+                    {metric.id === 'registrations' && (
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M16 11l2 2 4-4" />
                       </svg>
                     )}
-                    {metric.id === 'confidence' && (
+                    {metric.id === 'purchases' && (
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                        <path d="m9 12 2 2 4-4" />
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                        <path d="M3 6h18" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
                       </svg>
                     )}
                   </div>
@@ -322,31 +320,39 @@ export function InvestorAnalytics({ preview = false }: { preview?: boolean }) {
                     </svg>
                   )}
 
-                  {metric.id === 'constellations' && (
-                    <svg className="mini-chart mini-constellation-chart" viewBox="0 0 220 54" fill="none">
-                      <line x1="20" y1="42" x2="65" y2="24" stroke="#f3c969" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" />
-                      <line x1="65" y1="24" x2="115" y2="38" stroke="#f3c969" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" />
-                      <line x1="115" y1="38" x2="160" y2="12" stroke="#f3c969" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" />
-                      <line x1="160" y1="12" x2="205" y2="28" stroke="#f3c969" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" />
-                      <circle cx="20" cy="42" r="3.5" fill="#f3c969" />
-                      <circle cx="65" cy="24" r="4.5" fill="#f3c969" />
-                      <circle cx="115" cy="38" r="3" fill="#f3c969" />
-                      <circle cx="160" cy="12" r="5" fill="#f3c969" />
-                      <circle cx="205" cy="28" r="4" fill="#f3c969" />
+                  {metric.id === 'registrations' && (
+                    <svg className="mini-chart" viewBox="0 0 220 54" fill="none">
+                      <defs>
+                        <linearGradient id="chartGradReg" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f3c969" stopOpacity="0.35" />
+                          <stop offset="100%" stopColor="#f3c969" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M0 46 C 40 44, 70 36, 110 28 C 150 20, 180 14, 220 8"
+                        stroke="#f3c969"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M0 46 C 40 44, 70 36, 110 28 C 150 20, 180 14, 220 8 L 220 54 L 0 54 Z"
+                        fill="url(#chartGradReg)"
+                      />
+                      <circle cx="220" cy="8" r="4" fill="#f3c969" />
                     </svg>
                   )}
 
-                  {metric.id === 'confidence' && (
+                  {metric.id === 'purchases' && (
                     <div className="accuracy-progress-bar">
                       <div className="bar-labels">
-                        <span>Quality Threshold: 95%</span>
-                        <span className="bar-val">99.4% Verified</span>
+                        <span>Target: £150K</span>
+                        <span className="bar-val">£182K Projected</span>
                       </div>
                       <div className="bar-track">
                         <div
                           className="bar-fill"
                           style={{
-                            width: hasStarted ? '99.4%' : '0%',
+                            width: hasStarted ? '100%' : '0%',
                             transition: 'width 2s cubic-bezier(0.16, 1, 0.3, 1)',
                           }}
                         />

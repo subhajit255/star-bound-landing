@@ -8,6 +8,7 @@ import { SiteNav, SiteFooter } from './site-chrome';
 import { Roadmap } from './roadmap';
 import { HeroVideo } from './hero-video';
 import { InvestorAnalytics } from './investor-analytics';
+import { InvestorOpportunity } from './investor-opportunity';
 
 type Props = { content: SiteContentInput; preview?: boolean };
 
@@ -156,8 +157,9 @@ export function SiteView({ content, preview = false }: Props) {
         scrolled={scrolled}
         preview={preview}
         extra={[
-          ...(c.features.length > 0 ? [{ href: '#tour', label: 'Product tour' }] : []),
+          ...(c.features.length > 0 ? [{ href: '#tour', label: 'Concept' }] : []),
           { href: '#traction', label: 'Traction' },
+          { href: '#opportunity', label: 'Market Opportunity' },
           { href: '#roadmap', label: 'Roadmap' },
         ]}
       />
@@ -186,7 +188,7 @@ export function SiteView({ content, preview = false }: Props) {
             <Reveal force delay={240}>
               <div className="cta-row">
                 {c.primaryCta && (
-                  <a href="#tour" className="btn btn-gold" onClick={go('tour')} data-testid="link-hero-primary">
+                  <a href="#opportunity" className="btn btn-gold" onClick={go('opportunity')} data-testid="link-hero-primary">
                     {c.primaryCta}
                   </a>
                 )}
@@ -271,6 +273,8 @@ export function SiteView({ content, preview = false }: Props) {
       )}
 
       <InvestorAnalytics preview={preview} />
+
+      <InvestorOpportunity />
 
       <Roadmap />
 
