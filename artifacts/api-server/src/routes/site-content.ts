@@ -11,9 +11,30 @@ router.get("/admin/access", (req, res) => {
   res.set("Cache-Control", "no-store").json(GetAdminAccessResponse.parse(adminAccess(req)));
 });
 
-router.get("/site-content", async (_req, res): Promise<void> => {
+router.get("/site-content", async (req, res): Promise<void> => {
   await db.insert(siteContentTable).values({ id: 1, content: defaultContent }).onConflictDoNothing();
-  const [row] = await db.select().from(siteContentTable).where(eq(siteContentTable.id, 1));
+  let [row] = await db.select().from(siteContentTable).where(eq(siteContentTable.id, 1));
+
+  if (row) {
+    const content = row.content as Record<string, unknown> | undefined;
+    const isLegacy =
+      content?.["heroTitle"] === "Run your AI teams from one clear view." ||
+      content?.["heroEyebrow"] === "AI operations workspace" ||
+      process.env["FORCE_RESET_CONTENT"] === "true" ||
+      req.query["force_reset"] === "true";
+
+    if (isLegacy) {
+      const [updated] = await db
+        .update(siteContentTable)
+        .set({ content: defaultContent, updatedAt: new Date() })
+        .where(eq(siteContentTable.id, 1))
+        .returning();
+      if (updated) {
+        row = updated;
+      }
+    }
+  }
+
   res.set("Cache-Control", "no-store").json(
     GetSiteContentResponse.parse({ ...row.content, updatedAt: row.updatedAt.toISOString() }),
   );

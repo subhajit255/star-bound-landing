@@ -7,9 +7,30 @@ import { defaultPages } from "../lib/defaultPages";
 
 const router: IRouter = Router();
 
-router.get("/website-pages", async (_req, res): Promise<void> => {
+router.get("/website-pages", async (req, res): Promise<void> => {
   await db.insert(websitePagesTable).values({ id: 1, content: defaultPages }).onConflictDoNothing();
-  const [row] = await db.select().from(websitePagesTable).where(eq(websitePagesTable.id, 1));
+  let [row] = await db.select().from(websitePagesTable).where(eq(websitePagesTable.id, 1));
+
+  if (row) {
+    const content = row.content as { pages?: Array<{ eyebrow?: string; title?: string }> } | undefined;
+    const isLegacy =
+      content?.pages?.[0]?.eyebrow === "A clearer view of AI operations" ||
+      content?.pages?.[0]?.title === "Understand your AI teams at a glance." ||
+      process.env["FORCE_RESET_CONTENT"] === "true" ||
+      req.query["force_reset"] === "true";
+
+    if (isLegacy) {
+      const [updated] = await db
+        .update(websitePagesTable)
+        .set({ content: defaultPages, updatedAt: new Date() })
+        .where(eq(websitePagesTable.id, 1))
+        .returning();
+      if (updated) {
+        row = updated;
+      }
+    }
+  }
+
   res.set("Cache-Control", "no-store").json(GetWebsitePagesResponse.parse({ ...row.content, updatedAt: row.updatedAt }));
 });
 
